@@ -1,4 +1,4 @@
 import requests
 
-google = requests.get('http://google.com/')
-print(google.content)
+q2 = requests.get('https://github.com/jsmith465264/cmput404Lab/blob/main/q2.py')
+print(q2.content)
