@@ -17,16 +17,18 @@ def handle_request(conn, addr, extern_host, PORT):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as proxy_end:
         print('connecting to google')
         remote_ip = get_remote_ip(extern_host)
+        print(remote_ip)
+        print(PORT)
         proxy_end.connect((remote_ip, PORT))
-        
+        print('test')
         send_full_data = conn.recv(BUFFER_SIZE)
         print(f"Sending recieved data {send_full_data} to google")
-        
+        proxy_end.sendall(send_full_data)
         proxy_end.shutdown(socket.SHUT_WR)
         
         data = proxy_end.recv(BUFFER_SIZE)
         conn.send(data)
-        conn.close()
+        
 
 def main():
     HOST = "localhost"
@@ -43,7 +45,9 @@ def main():
             conn, addr = proxy_start.accept()
             #now for the multiprocesssing...
             p = Process (target=handle_request, args=( conn, addr, extern_host, PORT))
+            p.daemon = True
             p.start()
+        conn.close()
             
             
 if __name__ == "__main__":
